@@ -6,7 +6,7 @@ services:
         depends_on:
             - database
         image: 'yiisoftware/yii2-php:${PHP_IMAGE_NAME}'
-        container_name: 'yiiframework'
+        container_name: yiiframework
         networks:
             - backend
         volumes:
