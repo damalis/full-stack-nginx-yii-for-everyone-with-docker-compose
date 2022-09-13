@@ -66,7 +66,7 @@ $config = [
             ],
         ],
         */
-		'redis' => [
+        'redis' => [
             'class' => 'yii\redis\Connection',
             'hostname' => 'redis',
             'port' => 6379,
