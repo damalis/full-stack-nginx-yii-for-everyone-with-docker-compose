@@ -31,7 +31,8 @@ $config = [
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => \yii\symfonymailer\Mailer::class,
+            'viewPath' => '@app/mail',
             // send all mails to a file by default. You have to set
             // 'useFileTransport' to false and configure transport
             // for the mailer to send real emails.
@@ -47,11 +48,11 @@ $config = [
             ],
         ],
         'db' => [
-			'class' => 'yii\db\Connection',
-			'dsn' => 'database:host=localhost;dbname=DB_NAME',
-			'username' => 'DB_USER',
-			'password' => 'DB_PASSWORD',
-			'charset' => 'utf8',
+            'class' => 'yii\db\Connection',
+            'dsn' => 'database:host=localhost;dbname=DB_NAME',
+            'username' => 'DB_USER',
+            'password' => 'DB_PASSWORD',
+            'charset' => 'utf8',
 
 			// Schema cache options (for production environment)
 			//'enableSchemaCache' => true,
@@ -74,9 +75,9 @@ $config = [
         ],
     ],
     'params' => [
-		'adminEmail' => 'admin@example.com',
-		'senderEmail' => 'noreply@example.com',
-		'senderName' => 'Example.com mailer',
+        'adminEmail' => 'admin@example.com',
+        'senderEmail' => 'noreply@example.com',
+        'senderName' => 'Example.com mailer',
 	],
 ];
 
