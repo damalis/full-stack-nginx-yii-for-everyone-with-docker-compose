@@ -1,4 +1,4 @@
-# [full stack nginx yiiframework for everyone with docker compose](https://github.com/damalis/full-stack-proxy-nginx-yiiframework-for-everyone-with-docker-compose)
+# [full stack nginx yiiframework for everyone with docker compose](https://github.com/damalis/full-stack-nginx-yiiframework-for-everyone-with-docker-compose)
 
 If You want to have a yiiframework "basic" website at short time; 
 
