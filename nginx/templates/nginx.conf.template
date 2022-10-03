@@ -43,9 +43,13 @@ server {
 	gzip_disable	"MSIE [1-6]\.";
 
 	# add global x-content-type-options header
-	add_header X-Content-Type-Options nosniff;	
+	add_header X-Content-Type-Options nosniff;
+
+	charset utf-8;
+    client_max_body_size 128M;	
 	
 	root /var/www/html;
+	index	index.php;
 	
 	location / {
 		try_files $uri /index.php$is_args$args;
@@ -70,8 +74,19 @@ server {
 		#  the script name. If it is not set in fastcgi_params file,
 		# i.e. /etc/nginx/fastcgi_params or in the parent contexts,
 		# please comment off following line:
-		fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+		fastcgi_param  SCRIPT_FILENAME	$document_root$fastcgi_script_name;
 	}
+	#
+	# uncomment to avoid processing of calls to non-existing static files by Yii
+    #location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+    #    try_files $uri =404;
+    #}
+    #error_page 404 /404.html;
+
+    # deny accessing php files for the /assets directory
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
 	#
 	# deny running scripts inside writable directories
 	location ~* /(uploads|cache|media|logs|tmp|languages)/.*\.(php|pl|py|jsp|asp|sh|cgi)$ {
