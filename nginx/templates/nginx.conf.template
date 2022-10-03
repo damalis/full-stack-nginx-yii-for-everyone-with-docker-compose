@@ -1,5 +1,5 @@
-upstream docker_yiiframework {
-	server	yiiframework:9000;
+upstream docker_yii {
+	server	yii:9000;
 }
 
 server_tokens off;
@@ -60,7 +60,7 @@ server {
 		# Mitigate https://httpoxy.org/ vulnerabilities
 		fastcgi_param HTTP_PROXY "";
 
-		fastcgi_pass docker_yiiframework;
+		fastcgi_pass docker_yii;
 		fastcgi_index index.php;
 
 		# include the fastcgi_param setting
