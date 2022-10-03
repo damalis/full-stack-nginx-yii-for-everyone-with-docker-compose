@@ -83,10 +83,10 @@ server {
 	#}
 	#error_page 404 /404.html;
 
-    # deny accessing php files for the /assets directory
-    location ~ ^/assets/.*\.php$ {
-        deny all;
-    }
+	# deny accessing php files for the /assets directory
+		location ~ ^/assets/.*\.php$ {
+		deny all;
+	}
 	#
 	# deny running scripts inside writable directories
 	location ~* /(uploads|cache|media|logs|tmp|languages)/.*\.(php|pl|py|jsp|asp|sh|cgi)$ {
