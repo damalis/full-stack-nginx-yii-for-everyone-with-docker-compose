@@ -113,7 +113,7 @@ docker volume create --driver local --opt type=none --opt device=${DIRECTORY_PAT
 docker-compose up -d
 ```
 
-then reloading for nginx ssl configuration
+then reloading for webserver ssl configuration
 
 ```
 docker container restart webserver
