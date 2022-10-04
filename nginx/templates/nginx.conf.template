@@ -84,14 +84,8 @@ server {
 	#error_page 404 /404.html;
 
 	# deny accessing php files for the /assets directory
-		location ~ ^/assets/.*\.php$ {
+	location ~ ^/assets/.*\.php$ {
 		deny all;
-	}
-	#
-	# deny running scripts inside writable directories
-	location ~* /(uploads|cache|media|logs|tmp|languages)/.*\.(php|pl|py|jsp|asp|sh|cgi)$ {
-		return 403;
-		error_page 403 /403_error.html;
 	}
 	#
 	# deny access to .htaccess vb. files, if Apache's document root
