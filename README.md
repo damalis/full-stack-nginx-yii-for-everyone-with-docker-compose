@@ -34,9 +34,14 @@ Create rules to open ports to the internet, or to a specific IPv4 address or ran
 
 - [Auto Configuration and Installation](#automatic)
 - [Requirements](#requirements)
-- [Configuration](#configuration)
-- [Installation](#installation)
+- [Manual Configuration and Installation](#manual)
+- [Portainer Installation](#portainer)
 - [Usage](#usage)
+	- [Website](#website)
+	- [Webserver](#webserver)
+	- [Redis](#redis)
+	- [phpMyAdmin](#phpmyadmin)
+	- [backup](#backup)					  
 
 ## Automatic
 
@@ -65,7 +70,9 @@ Clone this repository or copy the files from this repository into a new folder. 
 
 Make sure to [add your user to the `docker` group](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user).
 
-## Configuration
+## Manual
+			 
+### Configuration
 
 download with
 ```
@@ -77,8 +84,6 @@ Open a terminal and `cd` to the folder in which `docker-compose.yml` is saved an
 ```
 cd full-stack-nginx-yii-for-everyone-with-docker-compose
 ```
-
-### Manual
 
 Copy the example environment into `.env`
 
@@ -99,14 +104,12 @@ cp ./phpmyadmin/apache2/sites-available/default-ssl.sample.conf ./phpmyadmin/apa
 ```
 change example.com to your domain name in ```./phpmyadmin/apache2/sites-available/default-ssl.conf``` file.
 
-## Installation
-
-### Manual
+### Installation
 
 Firstly: will create external volume
 
 ```
-docker volume create --driver local --opt type=none --opt device=${DIRECTORY_PATH}/certbot --opt o=bind certbot-etc
+docker volume create --driver local --opt type=none --opt device=$(pwd)/certbot --opt o=bind certbot-etc
 ```
 
 ```
@@ -123,7 +126,7 @@ The containers are now built and running. You should be able to access the Yii i
 
 For convenience you may add a new entry into your hosts file.
 
-### Installation Portainer
+## Portainer
 
 ```
 docker volume create portainer_data
@@ -136,6 +139,14 @@ You can also visit `https://example.com:9001` to access portainer after starting
 ## Usage
 
 #### You could manage docker containers without command line with portainer.
+
+### Show both running and stopped containers
+
+The docker ps command only shows running containers by default. To see all containers, use the -a (or --all) flag:
+
+```
+docker ps -a
+```
 
 ### Starting containers
 
@@ -153,7 +164,7 @@ docker-compose stop
 
 ### Removing containers
 
-To stop and remove all the containers use the`down` command:
+To stop and remove all the containers use the `down` command:
 
 ```
 docker-compose down
@@ -186,6 +197,10 @@ You can now use the `up` command:
 docker-compose up -d
 ```
 
+### Docker run reference
+
+[https://docs.docker.com/engine/reference/run/](https://docs.docker.com/engine/reference/run/)
+
 ### Website
 
 You should see the "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies Yii's requirements.
@@ -195,19 +210,13 @@ You can check if the minimum requirements are met using one of the following app
 https://example.com/requirements.php
 ```
 
-add or remove code in the ```./php-fpm/php/conf.d/security.ini``` file for custom php.ini configurations
+add or remove code in the ./php-fpm/php/conf.d/security.ini file for custom php.ini configurations
 
-Copy and paste the following code in the ```./php-fpm/php-fpm.d/z-www.conf``` file for php-fpm configurations at 1Gb Ram Host
+[https://www.php.net/manual/en/configuration.file.php](https://www.php.net/manual/en/configuration.file.php)
 
-```
-pm.max_children = 19
-pm.start_servers = 4
-pm.min_spare_servers = 2
-pm.max_spare_servers = 4
-pm.max_requests = 1000
-```
+You should make changes custom host configurations ```./php-fpm/php-fpm.d/z-www.conf``` then must restart service, FPM uses php.ini syntax for its configuration file - php-fpm.conf, and pool configuration files.
 
-Or you should make changes custom host configurations then must restart service
+[https://www.php.net/manual/en/install.fpm.configuration.php](https://www.php.net/manual/en/install.fpm.configuration.php)
 
 ```
 docker container restart yii
@@ -215,6 +224,12 @@ docker container restart yii
 
 add and/or remove yii site folders and files with any ftp client program in ```./yiiframework/html``` folder.
 <br />You can also visit `https://example.com` to access website after starting the containers.
+
+#### Webserver
+
+add or remove code in the ```./webserver/templates/nginx.conf.template``` file for custom nginx configurations
+
+[https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
 
 #### Redis
 
@@ -224,7 +239,7 @@ modify redis cache configuration values in the ```./yii/html/index.php``` file.
 
 ### phpMyAdmin
 
-could add/remove config.inc.php settings (such as Configuration Storage setup) with the various user defined settings in it:
+You can add your own custom config.inc.php settings (such as Configuration Storage setup) by creating a file named config.user.inc.php with the various user defined settings in it, and then linking it into the container using:
 
 ```
 ./phpmyadmin/config.user.inc.php
