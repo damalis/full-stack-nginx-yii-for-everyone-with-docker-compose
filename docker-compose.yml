@@ -150,7 +150,7 @@ services:
             - backend
         volumes:
             - 'db:/var/lib/mysql'
-            - db_backup_data:/tmp/backups
+            - 'db-backup-data:/tmp/backup'
             - type: bind
               source: ./database/conf.d/z-mysql.cnf
               target: '${MYSQL_CONF_PREFIX}/z-mysql.cnf'
@@ -168,7 +168,8 @@ services:
             TZ: '${LOCAL_TIMEZONE}'
         labels:            
             - "docker-volume-backup.stop-during-backup=true"
-            - "docker-volume-backup.archive-pre=/bin/sh -c 'mysqldump --all-databases > /tmp/backups/db_backup_data.sql'"
+            - "docker-volume-backup.archive-pre=/bin/sh -c 'mysqldump -uroot -p${MYSQL_ROOT_PASSWORD} --all-databases > /tmp/backup/db_backup_data.sql'"
+            - "docker-volume-backup.exec-label=database"
         command: "--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password"
     
     redis:
@@ -200,7 +201,7 @@ services:
         volumes:
             - 'html:/backup/html:ro'
             - 'db:/backup/db:ro'
-            - 'db_backup_data:/bakup/db_backup_data:ro'
+            - 'db-backup-data:/backup/db-backup-data:ro'
             - '/var/run/docker.sock:/var/run/docker.sock:ro'
             - type: bind
               source: ./backups
@@ -210,9 +211,10 @@ services:
         environment:
             BACKUP_CRON_EXPRESSION: '20 01 * * *'
             BACKUP_FILENAME: 'backup-%Y-%m-%dT%H-%M-%S.tar.gz'
+            BACKUP_ARCHIVE: '/archive'
             BACKUP_RETENTION_DAYS: '7'
             BACKUP_PRUNING_PREFIX: 'backup-'
-            TZ: '${LOCAL_TIMEZONE}'    
+            EXEC_LABEL: 'database'    
 
 networks:
     backend: null
@@ -235,8 +237,8 @@ volumes:
             o: bind
     db:
         name: ${DATABASE_CONT_NAME}-data
-    db_backup_data:
-        name: db_backup_data
+    db-backup-data:
+        name: ${DATABASE_CONT_NAME}-backup-data
     dtredis:
         name: redis-data
     certbot-etc:
