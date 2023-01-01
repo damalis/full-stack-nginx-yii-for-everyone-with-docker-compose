@@ -260,4 +260,4 @@ This will back up the all files and folders in database/dump sql and html volume
 
 #### can run on a custom cron schedule
 
-```BACKUP_CRON_EXPRESSION: '20 01 * * *'```
+```BACKUP_CRON_EXPRESSION: '20 01 * * *'``` the UTC timezone.
