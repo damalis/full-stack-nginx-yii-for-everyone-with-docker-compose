@@ -78,6 +78,7 @@ require up to 2 GB of RAM for **Docker** and **Docker Compose**.
 	- [Website](#website)
 	- [Webserver](#webserver)
 	- [Redis](#redis)
+	- [Debug](#debug)
 	- [phpMyAdmin](#phpmyadmin)
 	- [backup](#backup)
 
@@ -138,7 +139,6 @@ DATABASE_IMAGE_NAME=```mariadb``` or ```mysql```\
 DATABASE_CONT_NAME=```mariadb```, ```mysql``` or ```custom name```\
 DATABASE_PACKAGE_MANAGER=```apt-get update && apt-get install -y gettext-base``` for mariadb, ```microdnf install -y gettext``` for mysql\
 DATABASE_ADMIN_COMMANDLINE=```mariadb-admin``` for mariadb, ```mysqladmin``` for mysql\
-VARNISH_VERSION=```latest``` for centos version 9+ and fedora, ```stable``` for the others\
 SSL_SNIPPET=```echo 'Generated Self-signed SSL Certificate at localhost'``` for localhost\
 SSL_SNIPPET=```certbot certonly --webroot --webroot-path /tmp/acme-challenge --rsa-key-size 4096 --non-interactive --agree-tos --no-eff-email --force-renewal --email ${LETSENCRYPT_EMAIL} -d ${DOMAIN_NAME} -d www.${DOMAIN_NAME}``` for remotehost
 
@@ -310,25 +310,55 @@ add or remove code in the ```./webserver/templates/nginx.conf.template``` file f
 
 #### Redis
 
-add [Redis Cache](https://github.com/yiisoft/yii2-redis?tab=readme-ov-file#configuration) plugin and must add below code to config file.
-
+add Redis [Connect](https://github.com/yiisoft/yii2-redis?tab=readme-ov-file#configuration) plugin and must add below code to config file.
 ```
 return [
     //....
     'components' => [
-	    //....
+        //....
         'redis' => [
             'class' => 'yii\redis\Connection',
             'hostname' => 'redis',
             'port' => 6379,
             'database' => 0,
         ],
-		//....
+        //....
     ]
 ];
 ```
+add Redis [Cache](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/api/2.0/yii-redis-cache) plugin and must add below code to config file.
+```
+return [
+    //....
+    'components' => [
+        //....
+        'cache' => [
+            'class' => 'yii\redis\Cache',
+        ],
+	//....
+    ],
+]
+```
 
 modify redis cache configuration values in the ```./yii/config/web.php``` file.
+
+#### Debug
+
+add [Debug](https://github.com/yiisoft/yii2-debug?tab=readme-ov-file#usage) plugin and must add below code to config file.
+
+```
+$config['bootstrap'][] = 'debug';
+$config['modules']['debug'] => [
+    'class' => 'yii\debug\Module',
+    // uncomment and adjust the following to add your IP if you are not connecting from localhost.
+    'allowedIPs' => ['*'],
+    ],
+    // ...
+],
+//....
+```
+
+modify debug configuration values in the ```./yii/config/web.php``` file.
 
 ### phpMyAdmin
 
