@@ -39,7 +39,7 @@ services:
         labels:
             - 'docker-volume-backup.stop-during-backup=true'
         command: >
-            bash -c "apt-get -y update && sh /tmp/packagecheck.sh 'zip unzip gettext-base' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s intl redis && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer &&  
+            bash -c "apt-get -y update && sh /tmp/packagecheck.sh 'unzip gettext-base' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s intl redis zip @composer && 
             if [ -f \"${WEBSERVER_DOC_ROOT}/config/web.php\" ]; then composer update --prefer-dist yiisoft/yii2-app-basic --working-dir=${WEBSERVER_DOC_ROOT}; else rm -f ${WEBSERVER_DOC_ROOT}/README.md && composer create-project --prefer-dist yiisoft/yii2-app-basic ${WEBSERVER_DOC_ROOT} && cp ${WEBSERVER_DOC_ROOT}/requirements.php ${WEBSERVER_DOC_ROOT}/web/; 
             composer require --prefer-dist "yiisoft/yii2-redis":~2.0.0 "yiisoft/yii2-debug":~2.1.0 --working-dir=${WEBSERVER_DOC_ROOT}; fi && sed -i \"s/localhost/database/;s/yii2basic/$${DB_NAME}/;s/root/$${DB_USER}/;s/'password' => ''/'password' => '$${DB_PASSWORD}'/\" ${WEBSERVER_DOC_ROOT}/config/db.php && 
             export RANDOM_VALUE=$(tr -dc '[:alnum:]' </dev/urandom | head -c 32) && sed -i \"s/'cookieValidationKey' => ''/'cookieValidationKey' => '$$RANDOM_VALUE'/\" ${WEBSERVER_DOC_ROOT}/config/web.php && 
@@ -77,6 +77,11 @@ services:
             - '443:443'
         links:
             - yii
+        healthcheck:
+            test: ["CMD-SHELL", "/bin/pidof nginx > /dev/null || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
         environment:
             NGINX_HOST: ${DOMAIN_NAME}
             NGINX_PORT: 80
@@ -85,7 +90,8 @@ services:
 
     certbot:
         depends_on:
-            - webserver
+            webserver:
+                condition: service_healthy
         image: certbot/certbot:latest
         container_name: certbot
         networks:
@@ -169,8 +175,8 @@ services:
         restart: unless-stopped
         ports:
             - '3306:3306'
-        security_opt:
-            - no-new-privileges:true
+        privileged: true
+        cgroup: host
         healthcheck:
             test: ["CMD-SHELL", "${DATABASE_ADMIN_COMMANDLINE} ping --silent || exit 1"]
             interval: 5s
