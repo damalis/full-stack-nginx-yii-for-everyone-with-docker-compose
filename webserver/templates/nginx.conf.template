@@ -33,7 +33,7 @@ server {
 	charset utf-8;
 	client_max_body_size 128M;
 	
-	root /var/www/html/web;
+	root /var/www/html/public;
 	index	index.php;
 	
 	location / {
@@ -57,6 +57,7 @@ server {
 		fastcgi_pass	docker_yii;
 		#fastcgi_pass unix:/var/run/php5-fpm.sock;
 		try_files	$uri =404;
+		fastcgi_param APP_ENV "dev";
 	}
 	#
 	# deny access to .htaccess vb. files, if Apache's document root
