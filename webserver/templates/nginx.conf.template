@@ -54,10 +54,11 @@ server {
 	location ~ \.php$ {
 		include	fastcgi_params;
 		fastcgi_param	SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		fastcgi_param HTTPS on;
+		fastcgi_param APP_ENV "dev";
 		fastcgi_pass	docker_yii;
 		#fastcgi_pass unix:/var/run/php5-fpm.sock;
-		try_files	$uri =404;
-		fastcgi_param APP_ENV "dev";
+		try_files	$uri =404;		
 	}
 	#
 	# deny access to .htaccess vb. files, if Apache's document root
