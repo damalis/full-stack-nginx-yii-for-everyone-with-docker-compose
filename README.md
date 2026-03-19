@@ -302,10 +302,9 @@ docker compose up -d # Starts services in detached mode (in the background)
 #### Website
 
 You should see the "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies Yii's requirements.
-You can check if the minimum requirements are met using one of the following approaches:
 
 ```
-https://DOMAIN_NAME/requirements.php
+https://DOMAIN_NAME
 ```
 
 add or remove code in the ./php-fpm/php/conf.d/security.ini file for custom php.ini configurations
@@ -320,7 +319,7 @@ You should make changes custom host configurations ```./php-fpm/php-fpm.d/z-www.
 docker container restart yii
 ```
 
-add and/or remove yii site folders and files with any ftp client program in ```./yii/web``` folder.
+add and/or remove yii site folders and files with any ftp client program in ```./yii/public``` folder.
 <br />You can also visit `https://DOMAIN_NAME` to access website after starting the containers.
 
 #### Webserver
@@ -329,57 +328,41 @@ add or remove code in the ```./webserver/templates/nginx.conf.template``` file f
 
 [https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/](https://docs.nginx.com/nginx/admin-guide/basic-functionality/managing-configuration-files/)
 
+#### Database
+
+```
+Host: database
+Username: DB_USER
+Password: DB_PASSWORD
+Table Name: DB_NAME
+```
+
+[Connecting MySQL, MariaDB](https://github.com/yiisoft/db/blob/master/docs/guide/en/connection/mysql.md)
+
 #### Redis
 
-add Redis [Connect](https://github.com/yiisoft/yii2-redis?tab=readme-ov-file#configuration) plugin and must add below code to config file.
 ```
-return [
-    //....
-    'components' => [
-        //....
-        'redis' => [
-            'class' => 'yii\redis\Connection',
-            'hostname' => 'redis',
-            'port' => 6379,
-            'database' => 0,
-        ],
-        //....
-    ]
-];
-```
-add Redis [Cache](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/api/2.0/yii-redis-cache) plugin and must add below code to config file.
-```
-return [
-    //....
-    'components' => [
-        //....
-        'cache' => [
-            'class' => 'yii\redis\Cache',
-        ],
-	//....
-    ],
-]
+Host: redis
+Port: 6379
 ```
 
-modify redis cache configuration values in the ```./yii/config/web.php``` file.
+[Package cache-redis](https://www.yiiframework.com/doc/api/3.0/cache-redis)
 
 #### Debug
 
-add [Debug](https://github.com/yiisoft/yii2-debug?tab=readme-ov-file#usage) plugin and must add below code to config file.
+add [Debug](https://github.com/yiisoft/yii-debug?tab=readme-ov-file#general-usage) plugin and must add below code to config file.
 
 ```
-$config['bootstrap'][] = 'debug';
-$config['modules']['debug'] => [
-    'class' => 'yii\debug\Module',
-    // uncomment and adjust the following to add your IP if you are not connecting from localhost.
-    'allowedIPs' => ['*'],
+return [
+    //....
+    'yiisoft/yii-debug' => [
+        'enabled' => true,
     ],
-    // ...
-],
-//....
+    //....
+];
 ```
 
-modify debug configuration values in the ```./yii/config/web.php``` file.
+modify debug configuration values in the ```./yii/config/common/params.php``` file.
 
 #### phpMyAdmin
 
