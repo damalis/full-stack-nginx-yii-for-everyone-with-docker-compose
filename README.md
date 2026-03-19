@@ -301,7 +301,7 @@ docker compose up -d # Starts services in detached mode (in the background)
 
 #### Website
 
-You should see the "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies Yii's requirements.
+You should see the "Hello!" page in your browser. If not, please check if your PHP installation satisfies Yii's requirements.
 
 ```
 https://DOMAIN_NAME
