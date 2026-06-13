@@ -39,7 +39,7 @@ services:
         labels:
             - 'docker-volume-backup.stop-during-backup=true'
         command: >
-            bash -c "apt-get -y update && sh /tmp/packagecheck.sh 'unzip' && curl -sSL https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s intl redis zip @composer &&  
+            bash -c "apt-get -y update && sh /tmp/packagecheck.sh 'unzip' && curl -sSLf https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions -o - | sh -s intl redis zip @composer &&  
             if [ -f \"${WEBSERVER_DOC_ROOT}/public/index.php\" ]; then composer update yiisoft/app --working-dir=${WEBSERVER_DOC_ROOT}; else rm -f ${WEBSERVER_DOC_ROOT}/README.md && composer create-project yiisoft/app ${WEBSERVER_DOC_ROOT} && cd ${WEBSERVER_DOC_ROOT} && composer require yiisoft/db-mysql --working-dir=${WEBSERVER_DOC_ROOT} && chown -R www-data:www-data ${WEBSERVER_DOC_ROOT}; fi && 
             TMP=$$(mktemp) && grep -vF 'date.timezone' ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini > $$TMP && echo 'date.timezone = ${LOCAL_TIMEZONE}' >> $$TMP && cp $$TMP ${PHP_INI_DIR_PREFIX}/php/conf.d/security.ini; php-fpm"
 
